@@ -1,0 +1,83 @@
+<html>
+<head>
+	<title>RSS Feed</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		
+		
+        <div class="form-group">
+          <input id="urlName" type="text" class="form-control" placeholder="Enter The URL">
+        </div>
+        <button id="btnSubmit" type="button" class="btn btn-default">Submit</button>
+      
+      	
+      	<br/>
+      <div class="container" id="feedContent">
+      </div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	<script>
+		$(document).ready(function() {
+			var feedContent = document.getElementById("feedContent");
+	    	$("#btnSubmit").click(function(){
+	        	console.log("butoon");
+	        	var urlName = $('#urlName').val();
+	        	console.log(urlName);
+	        	//alert(urlName);
+	        	$.ajax({
+				  url      : 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(urlName),
+				  dataType : 'json',
+				  success  : function (data) {
+				  	count = 0;
+				  	console.log(data.responseData.feed);
+				    if (data.responseData.feed && data.responseData.feed.entries) {
+
+				      $.each(data.responseData.feed.entries, function (i, e) {
+				      	console.log(e);
+				        console.log("------------------------");
+				        console.log("title      : " + e.title);
+				        console.log("link     : " + e.link);
+				        console.log("content: " + e.content);
+				        console.log("date: " + e.publishedDate);
+				        
+				        var docfrag = document.createDocumentFragment();
+				        var div = document.createElement("div");
+				        var h3 = document.createElement("h3");
+				        var ptag = document.createElement("p");
+				        var ptag_desc = document.createElement("p");
+				        var ptag_date = document.createElement("p");
+				        var anchorTag = document.createElement("a");
+				        anchorTag.href = e.link;
+				        anchorTag.textContent = e.title;
+				        h3.appendChild(anchorTag);
+				        
+				        ptag_desc.textContent = e.content;
+				        ptag_date.textContent = e.publishedDate;
+				        div.appendChild(h3);
+				        div.appendChild(ptag);
+				        div.appendChild(ptag_desc);
+				        div.appendChild(ptag_date);
+				        docfrag.appendChild(div);
+				        feedContent.appendChild(docfrag);
+      				
+      				});
+
+    			}
+  				}	
+  				
+				});
+
+			});
+	    	}); 
+		
+		
+
+		
+	</script>
+	
+</body>
+</html>
